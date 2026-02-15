@@ -23,10 +23,8 @@ Derived from daily maximum temperature
 
 Standardized relative to climatology
 
-Instead of simple averaging, you use a Frank copula to model joint dependence between SASMI and STI and derive a compound probability-based index.
+Instead of simple averaging, we use a Frank copula to model joint dependence between SASMI and STI and derive a compound probability-based index.
 
-That’s actually the key innovation:
-You’re not just co-occurrence filtering — you're statistically modeling joint behavior.
 
 3️⃣ Event Detection Framework
 
@@ -48,78 +46,6 @@ Organized per latitude slice for computational scalability
 
 This transforms SSTCI from a signal into a usable event-based dataset, which is a big methodological strength.
 
-4️⃣ Validation Strategy
-
-You validated at multiple levels:
-
-SASMI vs SPEI & DEDI (daily drought credibility)
-
-SSTCI vs SCDHI (compound index coherence)
-
-Vegetation stress correspondence (LAI response during 2022 event)
-
-Radar plots for major global CDHE mega-events
-
-Regime shift analysis post-2000
-
-This multi-layer validation strengthens physical credibility — but here’s where I’ll challenge you:
-
-Agreement with other indices doesn’t automatically prove physical superiority.
-It proves consistency.
-
-You may want to be sharper in distinguishing:
-
-Redundancy
-
-Added physical value
-
-Predictive skill
-
-Right now SSTCI is well-validated descriptively — the next frontier would be predictive or impact-based skill metrics.
-
-5️⃣ Strengths
-
-Daily resolution (rare for global compound datasets)
-
-Physically informed soil moisture memory
-
-Copula-based dependence modeling
-
-Event-level catalogue (not just gridded time series)
-
-Global 0.1° coverage (1961–2023)
-
-That’s ESSD-level infrastructure work.
-
-6️⃣ Potential Weak Points (Devil’s Advocate Mode)
-
-Let’s push harder:
-
-The −2 threshold is extreme-focused — does SSTCI meaningfully characterize moderate compound stress?
-
-Frank copula assumes symmetric dependence — is tail dependence adequately captured?
-
-Does SSTCI outperform simpler multiplicative or percentile-based approaches?
-
-How sensitive are trends to standardization window choice?
-
-Are you double-counting temperature influence via soil moisture–temperature feedback embedded in SASMI climatology?
-
-These are not flaws — they are the next intellectual battleground.
-
-If I had to summarize SSTCI in one line:
-
-SSTCI is a probabilistically grounded, daily, globally resolved compound dry–hot index that integrates soil moisture memory and temperature extremes using copula-based dependence modeling, coupled with an objective event catalogue.
-
-Now tell me — do you see SSTCI more as a data product, a methodological contribution, or a new physical framework?
-
-Because those are three different claims.
-
-good you reemember so i am uploading myu code to github, i want a description for it 
-
-Oh I love this stage — this is where it becomes infrastructure, not just a paper.
-
-Here’s a clean, professional GitHub description you can use (ESSD-style but readable):
 
 🌍 SSTCI: Global Daily Compound Dry–Hot Extreme Index (1961–2023)
 
@@ -147,11 +73,6 @@ Threshold-based extreme detection
 
 Removal–merging optimization for independent event extraction
 
-Event-level attribute generation (duration, severity, timing, etc.)
-
-Scripts for global processing (latitude-sliced workflow)
-
-Utilities for validation and visualization
 
 🔍 Key Features
 
@@ -163,18 +84,6 @@ Physically informed soil moisture memory (τ-map)
 
 Event-based catalogue with statistically independent CDHEs
 
-Scalable latitude-wise processing architecture
 
-🎯 Scientific Purpose
 
-This framework enables:
 
-Detection of extreme compound dry–hot events
-
-Event-based climatological analysis
-
-Regime shift and intensification assessment
-
-Cross-index validation studies
-
-Impact-focused analysis linking compound extremes to vegetation stress 
