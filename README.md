@@ -1,0 +1,2 @@
+# Standarized-Soil-Moisture-Tempreture-Compound-Index-SSTCI-
+STANDARIZED SOIL MOISTURE TEMPREATURE COMPOUND INDEX 
