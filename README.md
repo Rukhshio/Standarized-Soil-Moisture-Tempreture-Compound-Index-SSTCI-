@@ -1,4 +1,4 @@
-# Standarized-Soil-Moisture-Tempreture-Compound-Index-SSTCI
+# Standarized Soil Moisture Tempreture Compound Index (SSTCI)
 1️⃣ Conceptual Purpose
 
 SSTCI is designed to quantify compound dry–hot extremes (CDHEs) at daily resolution and global scale. Instead of treating drought and heat separately, it explicitly models their dependence structure, which is physically important because soil moisture deficits and temperature anomalies amplify each other through land–atmosphere feedbacks.
