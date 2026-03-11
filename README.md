@@ -17,7 +17,7 @@ All outputs are written as NetCDF.
 FILES IN THIS REPOSITORY
 ------------------------
 
-Input example NetCDF (small demo subset-this workflow is applied on global scale in the paper):
+Input example NetCDF (The method is designed for global 0.1° daily data; this repository includes a small subset for demonstration)
   - mx2t.nc    : daily temperature
   - swvl1.nc   : daily soil moisture
 
