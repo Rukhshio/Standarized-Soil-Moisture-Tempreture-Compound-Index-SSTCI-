@@ -1,89 +1,153 @@
-# Standarized Soil Moisture Tempreture Compound Index (SSTCI)
-1️⃣ Conceptual Purpose
+Standardized Soil Moisture–Temperature Compound Index (SSTCI)
+===========================================================
 
-SSTCI is designed to quantify compound dry–hot extremes (CDHEs) at daily resolution and global scale. Instead of treating drought and heat separately, it explicitly models their dependence structure, which is physically important because soil moisture deficits and temperature anomalies amplify each other through land–atmosphere feedbacks.
+This repository contains a MATLAB workflow to compute a daily compound dry–hot
+index (SSTCI) from daily 2m maximum temperature (mx2t) and daily soil moisture (swvl1)
+provided as NetCDF files.
 
-2️⃣ Core Components
+The workflow is organized into three main stages:
 
-SSTCI combines two standardized signals:
+  1) STI   (temperature standardization)
+  2) SASMI (soil moisture standardization) — includes the dry-down + k steps
+  3) SSTCI (compound index from STI + SASMI using a Frank copula)
 
-SASMI (soil moisture–based antecedent drought index)
-
-Built from ERA5-Land SWVL1
-
-Incorporates grid-specific dry-down memory (τ-map derived from decay analysis)
-
-Uses daily standardization stratified by day-of-year
-
-Preserves daily temporal structure (1961–2023, 0.1° global)
-
-STI (Standardized Temperature Index)
-
-Derived from daily maximum temperature
-
-Standardized relative to climatology
-
-Instead of simple averaging, we use a Frank copula to model joint dependence between SASMI and STI and derive a compound probability-based index.
+All outputs are written as NetCDF.
 
 
-3️⃣ Event Detection Framework
+FILES IN THIS REPOSITORY
+------------------------
 
-Beyond the continuous daily SSTCI field, you created:
+Input example NetCDF (small demo subset-this workflow is applied on global scale in the paper):
+  - mx2t.nc    : daily temperature
+  - swvl1.nc   : daily soil moisture
 
-A Global CDHE Event Catalogue
+Step 1 — STI:
+  - calculate_STI.m : driver script to compute STI from mx2t.nc
+  - STI_func.m      : STI function used by calculate_STI.m
+  - Output: STI.nc
 
-Based on:
+Step 2 — SASMI (includes dry-down + k):
+  This stage has three sub-steps:
 
-Threshold selection (e.g., −2 for extreme)
+  (2A) Dry-down (tau):
+    - Calculate_drydown.m : computes median dry-down timescale tau per grid cell
+                            using swvl1.nc
+    - SM_drydowns2.m      : dry-down function used by Calculate_drydown.m
+    - Output: medianTau.nc
 
-Removal–merging optimization to avoid fragmented spells
+  (2B) tau → k:
+    - tau_to_k.m : clamps tau and computes dry-down constant k
+    - Output: k_map.nc
 
-Independence filtering
+  (2C) SASMI:
+    - calculate_SASMI.m : computes SASMI from swvl1.nc + k_map.nc
+    - SASMI_func.m      : SASMI function used by calculate_SASMI.m
+    - Output: SASMI.nc
 
-Each event is stored with 13 attributes (duration, severity, end date, etc.)
-
-Organized per latitude slice for computational scalability
-
-This transforms SSTCI from a signal into a usable event-based dataset, which is a big methodological strength.
-
-
-🌍 SSTCI: Global Daily Compound Dry–Hot Extreme Index (1961–2023)
-
-This repository contains the full computational framework for constructing the Standardized Soil Moisture–Temperature Compound Index (SSTCI) and the associated Global Compound Dry–Hot Extreme (CDHE) Event Catalogue at 0.1° spatial resolution and daily temporal scale (1961–2023).
-
-SSTCI is a probabilistically grounded compound index that integrates:
-
-SASMI (Standardized Antecedent Soil Moisture Index), incorporating grid-specific soil moisture memory derived from dry-down analysis
-
-STI (Standardized Temperature Index), derived from daily maximum temperature
-
-A Frank copula dependence model to quantify joint dry–hot behavior
-
-Unlike simple co-occurrence metrics, SSTCI explicitly models the statistical dependence between soil moisture deficits and temperature anomalies to produce a daily compound severity signal.
-
-📦 Repository Contents
-
-SASMI computation (memory-based soil moisture standardization)
-
-STI computation (daily temperature standardization)
-
-Copula fitting and SSTCI construction
-
-Threshold-based extreme detection
-
-Removal–merging optimization for independent event extraction
+Step 3 — SSTCI:
+  - Calculate_SSTCI.m : computes SSTCI from STI.nc + SASMI.nc
+  - Output: SSTCI.nc
 
 
-🔍 Key Features
+INPUT REQUIREMENTS
+------------------
 
-Daily resolution (preserves sub-seasonal variability)
+Required variables in mx2t.nc:
+  - mx2t : daily temperature (dimensions include time/lat/lon; order can vary)
+  - time, lat, lon
 
-Global 0.1° spatial coverage (1961–2023)
+Required variables in swvl1.nc:
+  - swvl1 : daily soil moisture (dimensions include time/lat/lon; order can vary)
+  - time, lat, lon
 
-Physically informed soil moisture memory (τ-map)
-
-Event-based catalogue with statistically independent CDHEs
-
-
+Calendar assumption:
+  - This workflow assumes a 365-day calendar (leap days removed).
+  - DOY-based binning uses 365 bins.
 
 
+OUTPUTS
+-------
+
+STI output:
+  - STI.nc
+  - Variable: STI(time, lat, lon)
+
+Median dry-down tau output:
+  - medianTau.nc
+  - Variable: medianTau(lat, lon)
+
+k map output:
+  - k_map.nc
+  - Variables: k_map(lat, lon) and tau_clamped(lat, lon)
+
+SASMI output:
+  - SASMI.nc
+  - Variable: SASMI(time, lat, lon)
+
+SSTCI output:
+  - SSTCI.nc
+  - Variable: SSTCI(time, lat, lon)
+
+
+HOW TO RUN (RECOMMENDED ORDER)
+-----------------------------
+
+1) Compute STI:
+   run('calculate_STI.m')
+   Output: STI.nc
+
+2) Compute SASMI (dry-down → k → SASMI):
+   2A) median tau from soil moisture dry-down:
+       run('Calculate_drydown.m')
+       Output: medianTau.nc
+
+   2B) clamp tau and compute k:
+       run('tau_to_k.m')
+       Output: k_map.nc
+
+   2C) compute SASMI:
+       run('calculate_SASMI.m')
+       Output: SASMI.nc
+
+3) Compute SSTCI:
+   run('Calculate_SSTCI.m')
+   Output: SSTCI.nc
+
+
+METHOD NOTES (WHAT THE SCRIPTS DO)
+---------------------------------
+
+STI:
+  - DOY-based standardization (365 bins)
+  - Computed independently for each grid cell
+  - NaNs preserved
+
+SASMI:
+  - Dry-down step: estimates multiple tau values using SM_drydowns2, then stores
+    the median tau per grid cell
+  - Clamp + k: tau is capped at 20 days and converted to k = exp(-1/tau)
+  - SASMI: uses a 14-day weighted antecedent window controlled by grid-specific k,
+    then DOY-based standardization (365 bins)
+  - First 13 days are NaN due to the 14-day memory window
+
+SSTCI:
+  - Uses STI(14:end) and SASMI(14:end)
+  - ECDF → uniform variates, Frank copula fit, copula CDF transform
+  - Mapped to standard normal space with norminv
+  - First 13 days stored as NaN
+
+MATLAB REQUIREMENTS
+-------------------
+
+NetCDF I/O:
+  - ncinfo, ncread, nccreate, ncwrite, ncwriteatt
+
+Statistics toolbox functions used in STI/SSTCI:
+  - normfit, normcdf, norminv, ecdf
+  - copulafit, copulacdf
+
+CITATION
+--------
+
+If you use this code in academic work, cite the associated dataset/paper
+(add citation here).
