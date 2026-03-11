@@ -151,3 +151,5 @@ CITATION
 
 If you use this code in academic work, cite the associated dataset/paper
 (add citation here).
+
+NOTE: Event-based CDHE catalogue generation is provided in a separate repository().
