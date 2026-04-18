@@ -1,6 +1,3 @@
-Standardized Soil Moisture–Temperature Compound Index (SSTCI)
-===========================================================
-
 This repository contains a MATLAB workflow to compute a daily compound dry–hot
 index (SSTCI) from daily 2m maximum temperature (mx2t) and daily soil moisture (swvl1)
 provided as NetCDF files.
