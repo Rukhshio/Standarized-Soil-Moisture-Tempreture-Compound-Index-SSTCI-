@@ -18,8 +18,8 @@ FILES IN THIS REPOSITORY
 ------------------------
 
 Input example NetCDF (The method is designed for global 0.1° daily data; this repository includes a small subset for demonstration)
-  - mx2t.nc    : daily temperature
-  - swvl1.nc   : daily soil moisture
+  - mx2t.nc    : daily max 2m air temperature
+  - swvl1.nc   : daily soil moisture top layer 
 
 Step 1 — STI:
   - calculate_STI.m : driver script to compute STI from mx2t.nc
@@ -136,14 +136,4 @@ SSTCI:
   - Mapped to standard normal space with norminv
   - First 13 days stored as NaN
 
-MATLAB REQUIREMENTS
--------------------
 
-NetCDF I/O:
-  - ncinfo, ncread, nccreate, ncwrite, ncwriteatt
-
-Statistics toolbox functions used in STI/SSTCI:
-  - normfit, normcdf, norminv, ecdf
-  - copulafit, copulacdf
-
-NOTE: Event-based CDHE catalogue generation is provided in a separate repository().
